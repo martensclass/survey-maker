@@ -1,0 +1,22 @@
+<% include ./partials/header %>
+
+<div class='ui main text container segment'>
+    <div class='ui huge header'>New Survey</div>
+    <form class='ui form' action='/surveys' method='POST'>
+        <div class='field'>
+            <label>Survey Question:</label>
+            <input type='text' name="survey[question]" placeholder='question'>    
+        </div>
+        <div class='field'>
+            <label>Survey Options (1 per line, 30 characters max per option, 8 options max)</label>
+            <textarea name="survey[options]"></textarea>
+        </div>
+        
+        <input class='ui violet big basic button' type='submit'>   
+        <a href='/surveys' class = 'ui red big basic button'>Cancel</a>
+    </form>
+</div>
+
+<% include ./partials/footer %>
+
+

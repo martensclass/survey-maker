@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <title>surveySalad</title>
+        <link rel='stylesheet' type='text/css' 
+            href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.1/semantic.min.css'>
+        <link rel='stylesheet' type='text/css'
+            href='/stylesheets/app.css'>
+             <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+    <script>
+    $(startup);
+    
+    function startup(){
+      $('.message .close').on('click', function() {
+          $(this).closest('.message').fadeOut();
+        });
+    }
+    
+    </script>
+    </head>
+    
+    <body>
+
+      <div class='ui fixed inverted menu'>
+           <div class='ui container'>
+               <div class='header item' style="border-right: 1px solid white;">survey&nbsp;<i class="users icon"></i>Salad</div>
+                <a href='/' class='item'>Home</a>
+                <% if (currentUser) { %>
+                <span class='item' style="border-left: 1px solid white;">Logged in as: <%=currentUser.username %></span>  
+                <div class="right menu">
+                      <a href='/surveys/user/<%=currentUser._id %>' class='item'>My Surveys</a>
+                      <a href='/surveys/new' class='item'>New Survey</a>
+                      <a href='/logout' class='item'>Logout</a>
+                  <% } else { %>
+                      <a href='/login' class='item'>Login</a>
+                      <a href='/register' class='item'>Register</a>
+                  <% } %>
+           </div>
+       </div>
+       </div>
+       <div style="width: 960px; margin: 50px auto 20px auto">
+        <!-- FLASH MESSAGES -->
+           <% if(success && success.length > 0) { %>
+            <div class="ui positive message">
+                <i class="close icon"></i>
+                <p style="margin-top: 0px;"> <%=success %> </p>
+            </div>
+        <% }  %>
+        <% if(error && error.length > 0) { %>
+            <div class="ui negative message">
+                <i class="close icon"></i>
+                <p> <%=error %> </p>
+            </div>
+        <% }  %>
+    </div>

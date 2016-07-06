@@ -1,0 +1,38 @@
+
+.container.main{
+    margin-top: 6em;
+}
+
+table, th, td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    
+}
+
+th{
+    background: black;
+    color: white;
+    width: 120px;
+     height: 30px;
+     font-size: .7em;
+}
+td{
+   width: 120px;
+    text-align: center;
+    padding: 5px;
+   
+}
+
+h3{
+    background-color: #825b48;
+    color: white;
+    padding: 10px;
+}
+
+.delbut{
+    font-size: .8em;
+    padding: 0;
+    border: 0px solid white;
+    color: red;
+    background: white;
+}

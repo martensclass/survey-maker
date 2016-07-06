@@ -1,0 +1,275 @@
+<html>
+    <head>
+        <title>
+            Survey Maker | <%= survey.question %>    
+        </title>
+        <link rel='stylesheet' type='text/css' href='https://code.jquery.com/ui/1.11.4/themes/blitzer/jquery-ui.css'>
+        <link rel='stylesheet' type='text/css' 
+            href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.1/semantic.min.css'>
+        <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.min.js'></script>
+        
+        <script>
+            $(startup);
+            var num=0;
+            var last=-1;
+            var totals=[<%=survey.values%>];
+            var pieChart=null;
+            var voted = <%=found %>;
+            var opts="<%=survey.options%>".split(",");
+            
+            var cols=["#1F65A5","#00CCFF","#90C34A","#F1BD0B","#D73C2A","#8E694C","#53584B","#FFFAAE"];
+            var chartcols=[];
+            function startup(){
+              surveysetup();
+              $("#choice").buttonset();
+              $("button").button();
+              for(var i=1; i<=opts.length; i++){
+                $('#btnvote' + i).click(update);  
+              }
+             // $("#btnsubmit").click(subvote);
+              $("#btnsubmit").html("Submit vote for ?");
+              $("#btnsubmit").prop('disabled', true);
+              if(voted){
+                $("#btnsubmit").hide();
+              }
+              $("#top").css("width", (totals.length * 112 + 100) + 'px');
+              makechart();
+               $('.message .close').on('click', function() {
+          $(this).closest('.message').fadeOut();
+        });
+            }
+            
+            function surveysetup(){
+              for(var i=1; i<=opts.length; i++){
+                if(voted){
+                  $("#choice").html("Thank you for voting - only 1 vote allowed per user or ip");
+                }
+                else{
+                  $("#choice").append("<input type='radio' name='vote' id='btnvote" + i + "'>");
+                  $("#choice").append("<label for='btnvote" + i + "' id='lblb" + i + "'></label>&nbsp;");
+                  if(opts[i-1].length < 20)
+                     $("#lblb" + i).html("<BR>" + opts[i-1]);
+                  else
+                     $("#lblb" + i).html(opts[i-1]);
+                   $("#hidefields").append("<input type='hidden' name='val[" + (i-1) + "]' id='txt" + i + "'>");
+                   $("#txt" + i).val("" + totals[i-1]);
+                }   
+                 $("#lblth" + i).html(opts[i-1]);
+                chartcols.push(cols[i-1]);
+                $("#lbl" + i).css("background-color",cols[i-1]);
+                $("#lbl" + i).html(totals[i-1]);
+              }
+              //hide rest of table
+              for(var i=opts.length+1; i<=8; i++){
+                $("#lblth" + i).hide();
+                $("#lbl" + i).hide();
+              }
+            }
+            
+            function update(event){
+              num=Number((event.target.id.slice(-1)));
+              $("#btnsubmit").prop('disabled', false);
+              
+              if(last==-1){
+                last=num;
+              }
+              else{
+                totals[last-1]--;
+                $("#txt" + last).val("" + totals[last-1]);
+                last=num;
+              }
+              totals[num-1]++;
+             var txt = $('input:radio:checked + label').text();
+              $("#btnsubmit").html("Submit vote for " + txt);
+              $("#txt" + num).val("" + totals[num-1]);
+            }
+            
+            function subvote(){
+              $('#btnvote' + num).prop("checked",false);
+              $("#choice").buttonset('refresh');
+              $("#btnsubmit").html("Submit vote for ?");
+               $("#btnsubmit").prop('disabled', true);
+              totals[num-1]++;
+              $("#lbl" + num).html(totals[num-1]);
+               $("#txt" + num).val("" + totals[num-1]);
+              makechart();
+            }
+            
+          
+            
+            function makechart(){
+             $("#chartcon").html('&nbsp;');
+               $("#chartcon").html('<canvas id="myChart" width="20" height="10"></canvas>');
+             var ctx = document.getElementById("myChart").getContext("2d");
+              
+            var data = {
+                labels: opts,
+                datasets: [
+                    {
+                        data:totals,
+                        backgroundColor: chartcols
+                    }]
+            };
+            
+              var pieChart = new Chart(ctx,{
+                type: 'doughnut',
+                data: data
+               
+            });
+            
+            }
+        </script>
+        <style>
+            body{
+              width: 960px;
+              margin: 10px auto;
+            }
+            
+            label{
+              font-size: 11px !important;
+              width: 120px;
+              height: 50px;
+            
+        
+            }
+            
+            button{
+              padding: 10px !important;
+              font-size: 13px !important;
+              width: 300px;
+            }
+            
+            table, td{
+              border: 1px solid black;
+              border-collapse: collapse;
+              text-align: center;
+              padding: 10px;
+              font-family: sans-serif;
+              font-size: 14px;
+            }
+            
+            th{
+              background: black;
+              color: white;
+              font-size: 10px;
+            }
+            
+            td{
+              width: 110px;
+            }
+            
+            #top{
+              margin: 0 auto;
+            }
+            h3{
+              text-align:center;
+              background-color: #825b48;
+              color: white;
+              padding: 10px;
+              font-size: 1.5em;
+            }
+            
+            
+        </style>
+    </head>
+    <body>
+       
+    <div class='ui fixed inverted menu'>
+           <div class='ui container'>
+               <div class='header item' style="border-right: 1px solid white;">survey&nbsp;<i class="users icon"></i>Salad</div>
+                <a href='/' class='item'>Home</a>
+                <% if (currentUser) { %>
+                <span class='item' style="border-left: 1px solid white;">Logged in as: <%=currentUser.username %></span>  
+                <div class="right menu">
+                      <a href='/surveys/user/<%=currentUser._id %>' class='item'>My Surveys</a>
+                      <a href='/surveys/new' class='item'>New Survey</a>
+                      <a href='/logout' class='item'>Logout</a>
+                  <% } else { %>
+                      <a href='/login' class='item'>Login</a>
+                      <a href='/register' class='item'>Register</a>
+                  <% } %>
+           </div>
+       </div>
+       </div>
+       
+   
+       
+        <div style="margin-top: 50px; width: 960px;">
+              <!-- FLASH MESSAGES -->
+           <% if(success && success.length > 0) { %>
+            <div class="ui positive message">
+                <i class="close icon"></i>
+                <p style="margin-top: 0px;"> <%=success %> </p>
+            </div>
+        <% }  %>
+        <% if(error && error.length > 0) { %>
+            <div class="ui negative message">
+                <i class="close icon"></i>
+                <p> <%=error %> </p>
+            </div>
+        <% }  %>
+          <div id='top'>
+        <h3> <%=survey.question %> </h3>
+        <form action='/surveys/update/<%=survey._id %>?_method=PUT' method='POST'>
+          <center>
+          <div id='choice'>
+           
+          </div>
+          </center>
+          <span id="hidefields">
+            
+          </span>
+          <br><center>
+          <button id='btnsubmit'>Submit Vote For ?</button>
+          </center>
+        </form>
+        
+        <div id='results'>
+          <center>
+          <table>
+            <th id='lblth1'></th>
+            <th id='lblth2'></th>
+            <th id='lblth3'></th>
+            <th id='lblth4'></th>
+            <th id='lblth5'></th>
+            <th id='lblth6'></th>
+            <th id='lblth7'></th>
+            <th id='lblth8'></th>
+            
+            <tr>
+              <td id='lbl1'>0</td>
+              <td id='lbl2'>0</td>
+              <td id='lbl3'>0</td>
+              <td id='lbl4'>0</td>
+              <td id='lbl5'>0</td>
+              <td id='lbl6'>0</td>
+              <td id='lbl7'>0</td>
+              <td id='lbl8'>0</td>
+            </tr>
+          </table>
+          </center>
+          <br>
+        </div>
+    
+       </div>
+          <hr>
+          <center>
+        <div id='chartcon' style="width: 900px;">
+        <canvas id="myChart" width="20" height="10"></canvas>
+        </div></center>
+         <% if (currentUser && currentUser.username==survey.user) { %>
+       
+         <form action='/surveys/<%=survey._id %>?_method=DELETE' method='POST'>
+             <button class="ui red basic right floated button" style="width: 140px;">Delete Survey</button>
+             <a href='/surveys/<%=survey._id%>/edit' class = "ui purple basic big right floated button" style="font-size: 1em;padding:16px;width: 140px;" >Edit Survey</a> 
+        </form>
+        
+        <% } %>
+ </div>
+ <div style="margin: 80px auto; background: white;"><hr>
+    <h6 style="float:right;margin:0">surveySalad is a FreeCodeCamp project developed by:  John Martens</h6>
+    </div>
+    </body>
+</html>

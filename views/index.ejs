@@ -1,0 +1,34 @@
+ <% include ./partials/header %> 
+
+<div style="width: 960px; margin: 0 auto">
+
+<h1>List of Surveys</h1>
+
+<% surveys.forEach(function(survey){ %>
+    <div class="ui top segment" style='opacity: 0.9;'>
+        <h3>Survey Question:&nbsp;&nbsp;<%=survey.question%> 
+        <% if(currentUser && currentUser.username==survey.user){ %>
+            <small style="margin-left: 20px;font-size: .7em;">(This is your survey!)</small>
+        <% } %>
+            <a href='/surveys/<%=survey._id %>' class = "ui inverted standard mini right floated button">Open Survey</a>
+        </h3>
+        <h4 style="padding: 0;margin: 0">Current results</h4>
+        <table><tr>
+            <% for(var i=0; i<survey.options.length; i++) { %> 
+            <th><%=survey.options[i]%></th>
+            <% } %>
+            </tr><tr>
+            <% for(var i=0; i<survey.options.length; i++) { %> 
+            <td><%=survey.values[i]%></td>
+            <% } %>
+            </tr>
+        </table>
+        
+    </div>
+<% }) %>
+
+
+</div>
+
+
+<% include ./partials/footer %>

@@ -1,0 +1,35 @@
+<% include ./partials/header %>
+
+<div style="width: 960px; margin: 50 auto">
+
+<h1>List Surveys for User: <%=user.username %> </h1>
+
+<% user.surveys.forEach(function(survey){ %>
+    <div class="ui top segment">
+        <h3>Survey Question:&nbsp;&nbsp;<%=survey.question%> 
+        
+            <a href='/surveys/<%=survey._id %>' class = "ui inverted standard mini right floated button">Open Survey</a>
+        </h3>
+        <h4 style="padding: 0;margin: 0">Current results</h4>
+        <table><tr>
+            <% for(var i=0; i<survey.options.length; i++) { %> 
+            <th><%=survey.options[i]%></th>
+            <% } %>
+            </tr><tr>
+            <% for(var i=0; i<survey.options.length; i++) { %> 
+            <td><%=survey.values[i]%></td>
+            <% } %>
+            </tr>
+        </table><br>
+        <form action='/surveys/<%=survey._id %>?_method=DELETE' method='POST'>
+             <button class="ui red basic button" style="width: 140px;">Delete Survey</button>
+             <a href='/surveys/<%=survey._id%>/edit' class = "ui purple basic big button" style="font-size: 1em;padding:11px;width: 140px;" >Edit Survey</a> 
+        </form>
+    </div>
+<% }) %>
+
+
+</div>
+
+
+<% include ./partials/footer %>
