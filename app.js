@@ -38,6 +38,8 @@ app.use(function (req,res,next){
 
 //connect to DB, define a table with fields:
 mongoose.connect("mongodb://localhost/survey");
+//mongoose.connect("mongodb://jjmuugs:jakeman123@ds015915.mlab.com:15915/surveysalad");
+console.log(process.env.DATABASEURL);
 
 var Survey = require("./models/survey");
 
