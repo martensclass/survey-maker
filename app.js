@@ -237,7 +237,7 @@ app.put('/surveys/update/:id', function(req, res){
             }
         });
           
-            req.flash("success", "Your vote wast cast");
+            req.flash("success", "Your vote was cast");
             res.redirect('/surveys/' + req.params.id);
       }
       });
